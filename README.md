@@ -1,99 +1,158 @@
 # CampusMate – GenAI‑Powered Study Assistant
 
-## Overview
-CampusMate is a lightweight web app that helps students **ask questions**, **learn concepts**, **summarise text**, and **generate quizzes** using the Groq LLM API. It runs locally with Streamlit and can be deployed to Streamlit Community Cloud.
+## 📖 Overview
+**CampusMate** is a lightweight, Streamlit‑based web application that acts as an AI‑powered study companion for college and university students. Using the **Groq** large‑language‑model API, it can:
 
-## Features
-| Feature | Description |
-| ------- | ----------- |
-| **AI Chat** | Conversational Q&A with session‑based memory (only for the current session). |
-| **Study Mode** | Explanations tuned for *Beginner*, *Intermediate* or *Advanced* levels. |
-| **Text Summarizer** | Turns any chunk of text into a short summary. |
-| **Quiz Generator** | Produces multiple‑choice quizzes (question, 4 options, answer, explanation). |
+- Answer academic questions in a conversational manner.
+- Explain concepts at *Beginner*, *Intermediate* or *Advanced* levels.
+- Summarise arbitrary text into a concise paragraph.
+- Generate multiple‑choice quizzes with explanations.
 
-## Tech Stack
-- **Python 3.11+**
-- **Streamlit** – UI framework
-- **Groq SDK** – LLM inference (e.g., `llama3-70b-8192`)
-- **python‑dotenv** – local `.env` handling
+All interactions happen in a single session – the assistant remembers the conversation while the app is open, but no data is persisted to disk, keeping the system simple and privacy‑friendly.
 
-## Architecture
+---
+
+## ✨ Features
+| Feature | What it does | UI location |
+|---------|---------------|-------------|
+| **AI Chat** | Natural‑language Q&A with context‑aware follow‑ups. | Sidebar → *AI Chat* |
+| **Study Mode** | Tailored explanations for a chosen difficulty level. | Sidebar → *Study Mode* |
+| **Text Summariser** | Turns a paragraph (or longer) into a 2‑3 sentence summary. | Sidebar → *Text Summarizer* |
+| **Quiz Generator** | Generates 5 MCQs (configurable) on a given topic, with answer keys and short explanations. | Sidebar → *Quiz Generator* |
+
+---
+
+## 🛠️ Tech Stack
+- **Python 3.11+** – core language.
+- **Streamlit** – UI framework (`streamlit>=1.35`).
+- **Groq SDK** – official client for LLM inference (`groq>=0.5.0`).
+- **python‑dotenv** – loads local environment variables (`python-dotenv>=1.0.0`).
+- **pytest** – unit‑testing framework (`pytest>=8.0`).
+
+---
+
+## 📐 Architecture
 ```mermaid
 flowchart TD
-    A[Streamlit Front‑end] -->|HTTP requests| B[app.py (router & UI)]
-    B --> C[assistant.GroqAssistant]
-    C --> D[Groq API]
-    B -->|calls| E[modules/study_mode.py]
-    B -->|calls| F[modules/summarizer.py]
-    B -->|calls| G[modules/quiz_generator.py]
-    style D fill:#f9f,stroke:#333,stroke-width:2px
+    UI[Streamlit Front‑end] -->|user actions| Router[app.py (router & UI)]
+    Router --> Assistant[assistant.GroqAssistant]
+    Assistant --> GroqAPI[Groq LLM API]
+    Router --> Study[modules/study_mode.py]
+    Router --> Summarizer[modules/summarizer.py]
+    Router --> Quiz[modules/quiz_generator.py]
+    style GroqAPI fill:#f9f,stroke:#333,stroke-width:2px
 ```
+*The diagram shows the thin separation between the UI (`app.py`), the Groq wrapper (`assistant.py`), and the feature modules.*
 
-## Project Structure
+---
+
+## 📁 Repository Layout
 ```
-campusmate/
+Study_Virtual_Assistant/
 │
-├─ app.py                     # Streamlit UI & navigation
-├─ assistant.py               # Groq client wrapper
-├─ config.py                  # .env loading & validation
-├─ prompts.py                 # System prompts for each feature
+├─ app.py                # Streamlit entry point & navigation
+├─ assistant.py          # Groq client wrapper
+├─ config.py             # Loads .env, validates API key
+├─ prompts.py            # System prompts for each capability
 │
-├─ modules/
+├─ modules/              # Feature implementations
 │   ├─ __init__.py
 │   ├─ study_mode.py
 │   ├─ summarizer.py
 │   └─ quiz_generator.py
 │
-├─ tests/
-│   └─ test_prompts.py        # Unit tests for prompts
+├─ tests/                # Simple unit tests (no external calls)
+│   ├─ __init__.py
+│   └─ test_prompts.py
 │
-├─ .env.example               # Template env file
+├─ .env.example          # Template for local secrets
 ├─ .gitignore
 ├─ requirements.txt
 └─ README.md
 ```
 
-## Setup & Installation
-```bash
-# Clone the repo
-git clone https://github.com/paliwalketan05/Study_Virtual_Assistant.git
-cd Study_Virtual_Assistant
+---
 
-# Create a virtual environment
-python -m venv .venv
-.\.venv\Scripts\activate   # Windows PowerShell
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Configure credentials
-cp .env.example .env
-# Edit .env and paste your Groq API key
-```
-
-## Running the App Locally
-```bash
-streamlit run app.py
-```
-Open the displayed URL (usually http://localhost:8501) in a browser.
-
-## Testing
-```bash
-pytest -v
-```
-All tests should pass (`4 passed`).
-
-## Deployment to Streamlit Community Cloud
-1. Push the repository to GitHub.
-2. In Streamlit Cloud, create a new app pointing to `app.py`.
-3. Add **Secrets** → `GROQ_API_KEY` (and optionally `GROQ_MODEL`).
-4. Deploy – Streamlit installs `requirements.txt` automatically.
-
-## Future Improvements
-- Persistent conversation storage (database).
-- Retrieval‑augmented generation (RAG) with PDFs or course material.
-- Voice input & text‑to‑speech.
-- Multi‑user authentication and dashboard.
+## 🚀 Getting Started (Local Development)
+1. **Clone the repository**
+   ```powershell
+   git clone https://github.com/paliwalketan05/Study_Virtual_Assistant.git
+   cd Study_Virtual_Assistant
+   ```
+2. **Create & activate a virtual environment**
+   ```powershell
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1   # PowerShell (use `source .venv/bin/activate` on Linux/macOS)
+   ```
+3. **Install dependencies**
+   ```powershell
+   pip install -r requirements.txt
+   ```
+4. **Set up your Groq credentials**
+   ```powershell
+   copy .env.example .env   # creates a writable .env file
+   notepad .env              # replace `YOUR_GROQ_API_KEY` with your real key
+   ```
+   The file should look like:
+   ```text
+   GROQ_API_KEY=your_real_groq_key_here
+   GROQ_MODEL=llama3-70b-8192   # you can change the model if you wish
+   ```
+5. **Run the application**
+   ```powershell
+   streamlit run app.py
+   ```
+   Open the URL printed in the console (usually `http://localhost:8501`).
 
 ---
-*Created for the campus project deadline. Happy studying!*
+
+## ✅ Running the Test Suite
+The repository ships with a tiny test suite that validates the prompt‑generation helpers – no external API calls are made.
+```powershell
+pytest -v
+```
+Expected output (example):
+```
+============================= test session starts ==============================
+collected 4 items
+
+tests/test_prompts.py ....                                            [100%]
+
+============================== 4 passed in 0.03s ==============================
+```
+If you see `4 passed`, everything is wired correctly.
+
+---
+
+## 🌐 Deploying to Streamlit Community Cloud
+1. **Push the repo** to GitHub (already done).
+2. In the Streamlit Cloud dashboard, click **New app**, select the repository and set the **Main file path** to `app.py`.
+3. Add a **Secret** called `GROQ_API_KEY` (and optionally `GROQ_MODEL`) under the *Secrets* tab.
+4. Click **Deploy** – Streamlit will install all packages from `requirements.txt` and start the app.
+
+Your app will be publicly reachable at the generated URL.
+
+---
+
+## 🔮 Future Enhancements (Ideas for the Next Iteration)
+- **Persistent conversation storage** (e.g., SQLite or a cloud DB) so history survives page reloads.
+- **RAG (Retrieval‑Augmented Generation)** – ingest PDF lecture notes or textbook chapters for more accurate answers.
+- **Voice input & text‑to‑speech** for hands‑free studying.
+- **User authentication & multi‑user dashboards** so each student gets a personal workspace.
+- **More advanced quiz options** (true/false, fill‑in‑the‑blank, timed quizzes).
+
+---
+
+## 🙋‍♀️ Acknowledgments & Credits
+- **Groq** for providing a fast, affordable LLM inference API.
+- **Streamlit** for making web UI creation in pure Python a breeze.
+- **Open‑source community** – many small utilities (e.g., `python‑dotenv`) that keep the project lean.
+
+---
+
+## 📄 License
+This project is released under the **MIT License** – feel free to copy, modify, and share it for educational purposes.
+
+---
+
+*Happy studying!* 🎓
