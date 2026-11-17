@@ -111,16 +111,6 @@ If you see `4 passed`, everything is wired correctly.
 
 ---
 
-## 🌐 Deploying to Streamlit Community Cloud
-1. **Push the repo** to GitHub (already done).
-2. In the Streamlit Cloud dashboard, click **New app**, select the repository and set the **Main file path** to `app.py`.
-3. Add a **Secret** called `GROQ_API_KEY` (and optionally `GROQ_MODEL`) under the *Secrets* tab.
-4. Click **Deploy** – Streamlit will install all packages from `requirements.txt` and start the app.
-
-Your app will be publicly reachable at the generated URL.
-
----
-
 ## 🔮 Future Enhancements (Ideas for the Next Iteration)
 - **Persistent conversation storage** (e.g., SQLite or a cloud DB) so history survives page reloads.
 - **RAG (Retrieval‑Augmented Generation)** – ingest PDF lecture notes or textbook chapters for more accurate answers.
