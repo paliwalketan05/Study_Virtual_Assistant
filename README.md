@@ -32,19 +32,6 @@ All interactions happen in a single session – the assistant remembers the conv
 ---
 
 ## 📐 Architecture
-```mermaid
-flowchart TD
-    UI[Streamlit Front‑end] -->|user actions| Router[app.py (router & UI)]
-    Router --> Assistant[assistant.GroqAssistant]
-    Assistant --> GroqAPI[Groq LLM API]
-    Router --> Study[modules/study_mode.py]
-    Router --> Summarizer[modules/summarizer.py]
-    Router --> Quiz[modules/quiz_generator.py]
-    style GroqAPI fill:#f9f,stroke:#333,stroke-width:2px
-```
-*The diagram shows the thin separation between the UI (`app.py`), the Groq wrapper (`assistant.py`), and the feature modules.*
-
----
 
 ## 📁 Repository Layout
 ```
@@ -96,7 +83,7 @@ Study_Virtual_Assistant/
    The file should look like:
    ```text
    GROQ_API_KEY=your_real_groq_key_here
-   GROQ_MODEL=llama3-70b-8192   # you can change the model if you wish
+   GROQ_MODEL=openai/gpt-oss-120b   # you can change the model if you wish
    ```
 5. **Run the application**
    ```powershell
